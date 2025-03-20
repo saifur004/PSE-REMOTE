@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Remote Car Control</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        video { width: 70%; height: auto; border: 2px solid black; }
+        .controls { margin-top: 20px; }
+        button { font-size: 20px; margin: 10px; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Remote Car Control & Video Stream</h1>
+    <video id="video" autoplay playsinline></video>
+    <div class="controls">
+        <button onclick="sendCommand('forward')">⬆ Forward</button><br>
+        <button onclick="sendCommand('left')">⬅ Left</button>
+        <button onclick="sendCommand('stop')">🛑 Stop</button>
+        <button onclick="sendCommand('right')">➡ Right</button><br>
+        <button onclick="sendCommand('backward')">⬇ Backward</button>
+    </div>
+    
+    <script>
+        let pc = new RTCPeerConnection();
+        let video = document.getElementById('video');
+        pc.ontrack = (event) => { video.srcObject = event.streams[0]; };
+        pc.createOffer().then(offer => pc.setLocalDescription(offer));
+
+        function sendCommand(command) {
+            fetch("/control", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: command })
+            }).then(response => console.log("Command sent: ", command));
+        }
+    </script>
+</body>
+</html>

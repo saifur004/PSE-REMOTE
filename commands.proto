@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+message Void {}
+
+message SupportedStreamsReply {
+    repeated string protocols = 1;
+}
+
+message CamStreamStartRequest {
+    string protocol = 1;
+}
+
+message CamStreamPort {
+    int32 port = 1;
+}
+
+message GpsCoordinates {
+    double latitude = 1;
+    double longitude = 2;
+}
+
+message ProcessorData {
+    string status = 1;
+}
+
+message BatteryData {
+    int32 percentage = 1;
+}
+
+message GeneralInformationData {
+    string info = 1;
+}
+
+service CommandsService {
+    rpc Heartbeat (Void) returns (Void);
+    rpc GetCameraProtocols (Void) returns (SupportedStreamsReply);
+    rpc StartCamera (CamStreamStartRequest) returns (CamStreamPort);
+    rpc StopCamera (CamStreamPort) returns (Void);
+    rpc ResetUdp(Void) returns (Void);
+    rpc GetGpsCoordinates (Void) returns (GpsCoordinates);
+    rpc GetProcessorStatus (Void) returns (ProcessorData);
+    rpc GetBatteryStatus (Void) returns (BatteryData);
+    rpc GetGeneralInformation (Void) returns (GeneralInformationData);
+}
